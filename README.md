@@ -2,6 +2,8 @@
 
 A Next.js 14 application for bulk invoice upload and natural-language financial queries, built on Supabase and Claude AI.
 
+**🚀 [Live Demo](https://finance-app-steel-rho.vercel.app/)**
+
 ---
 
 ## Architecture
