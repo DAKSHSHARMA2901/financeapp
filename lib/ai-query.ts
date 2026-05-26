@@ -64,10 +64,21 @@ CRITICAL RULES:
       "explanation": "one-sentence description"
     }
 
+INDIAN FINANCIAL YEAR RULES (very important):
+- Indian FY runs April 1 to March 31. FY 2024-25 = Apr 1 2024 to Mar 31 2025.
+- "This year" / "current year" → use the current Indian FY based on today's date (${new Date().toISOString().split('T')[0]}).
+  To compute current Indian FY start: if current month >= 4, start = current_year-04-01, else start = (current_year-1)-04-01.
+  Example SQL: invoice_date >= DATE_TRUNC('year', CURRENT_DATE - INTERVAL '3 months') + INTERVAL '3 months'
+              AND invoice_date < DATE_TRUNC('year', CURRENT_DATE - INTERVAL '3 months') + INTERVAL '15 months'
+- "Last year" → previous Indian FY (one year before current FY)
+- "FY 2024-25" or "2024-25" → Apr 1 2024 to Mar 31 2025
+- If NO date filter is mentioned, do NOT add one — return ALL records.
+- NEVER filter by calendar year (EXTRACT(YEAR FROM invoice_date) = EXTRACT(YEAR FROM CURRENT_DATE)) for Indian finance queries.
+
 FINANCIAL QUERY PATTERNS:
-- Total sales: SELECT ROUND(SUM(total_amount), 2) FROM invoices WHERE invoice_type = 'sales'
-- Sales by customer: SELECT customer_id, SUM(...) FROM invoices GROUP BY customer_id
-- Date-based analysis: Use invoice_date, transaction_date for filtering
+- All-time total sales: SELECT ROUND(SUM(total_amount), 2) AS total_sales FROM invoices WHERE invoice_type = 'sales'
+- Sales by customer: SELECT c.name, ROUND(SUM(i.total_amount),2) AS total FROM invoices i JOIN customers c ON c.id = i.customer_id WHERE i.invoice_type='sales' GROUP BY c.name ORDER BY total DESC
+- Current FY sales: WHERE invoice_type='sales' AND invoice_date >= DATE_TRUNC('year', CURRENT_DATE - INTERVAL '3 months') + INTERVAL '3 months' AND invoice_date < DATE_TRUNC('year', CURRENT_DATE - INTERVAL '3 months') + INTERVAL '15 months'
 - Overdue invoices: WHERE status = 'overdue' OR (status = 'pending' AND due_date < CURRENT_DATE)
 - Unpaid amounts: WHERE status IN ('pending', 'overdue')
 

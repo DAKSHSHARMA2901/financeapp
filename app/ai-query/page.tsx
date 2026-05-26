@@ -37,9 +37,9 @@ interface Message {
 }
 
 const EXAMPLE_QUESTIONS = [
-  'What were total sales this year?',
+  'What are total sales across all invoices?',
   'Which customer had the highest invoices?',
-  'Compare sales vs purchases for last month',
+  'What were total sales in FY 2024-25?',
   'List all overdue invoices',
   'What is the total unpaid amount?',
 ]
